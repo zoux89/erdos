@@ -1,4 +1,4 @@
-# Erdos
+# Erdős
 
 Automated theorem proving pipeline using Aristotle API with Lean 4 verification.
 
@@ -6,81 +6,61 @@ Automated theorem proving pipeline using Aristotle API with Lean 4 verification.
 
 ```bash
 pip install -e .
+lake update  # fetch Mathlib
 ```
 
-Set environment variables (or create `.env`):
+Create `.env`:
 ```
 ARISTOTLE_API_KEY=your_key
-ANTHROPIC_API_KEY=your_key  # optional, for LLM judge
+ANTHROPIC_API_KEY=your_key  # for LLM judge
 ```
 
 ## Usage
 
-### Generate a proof
 ```bash
-erdos prove problems/triangle_tiling.md --proof "Use grid subdivision"
-```
+# Prove a Lean problem with hints
+erdos prove problems/lean/erdos_85.lean --context problems/hints/erdos_85_hint.md
 
-### Verify a Lean file
-```bash
-erdos check solutions/triangle_tiling/TriangleTiling.lean
-```
+# Prove a markdown problem
+erdos prove problems/markdown/triangle_tiling.md
 
-### Batch process
-```bash
-erdos batch problems/ --pattern "*.md"
-```
+# Verify locally
+erdos check solutions/example_problem/SumFirstN.lean
 
-### Show config
-```bash
-erdos config
-```
-
-## CLI Options
-
-```
-erdos prove <file> [options]
-  -p, --proof         Proof hint
-  -c, --context       Context files
-  -n, --max-iterations   Max attempts (default: 5)
-  --no-verify         Skip Lean verification
-
-erdos check <file>    Verify Lean proof locally
-erdos batch <folder>  Process multiple problems
-erdos config          Show configuration
-```
-
-## Structure
-
-```mermaid
-graph LR
-    A[Problem .md/.tex/.lean] --> B[Aristotle API]
-    B --> C[Lean Proof]
-    C --> D{Lean Verifier}
-    D -->|Pass| E{LLM Judge}
-    D -->|Fail| F[Analyze & Retry]
-    E -->|Real Proof| G[Success]
-    E -->|BS Proof| F
-    F --> B
+# Skip Lean verification
+erdos prove problems/markdown/triangle_tiling.md --no-verify
 ```
 
 ## Project Layout
 
 ```
-problems/        # Input problems
+problems/
+├── lean/        # Formal Lean problem statements
+├── markdown/    # Informal problem descriptions
+└── hints/       # Proof hints and notes
 solutions/       # Generated proofs
 src/erdos/       # Python pipeline
 Erdos/           # Lean library
 ```
 
-## Lean
+## Pipeline
 
-Build all:
-```bash
-lake build
+```mermaid
+graph LR
+    A[Problem] --> B[Aristotle API]
+    B --> C[Lean Proof]
+    C --> D{Lean Verify}
+    D -->|Pass| E{LLM Judge}
+    D -->|Fail| F[Retry]
+    E -->|Valid| G[Success]
+    E -->|BS| F
+    F --> B
 ```
 
-Build specific:
+## Lean
+
 ```bash
-lake build solutions.triangle_tiling.TriangleTiling
+lake build                    # build all
+lake build Erdos              # build library
+lake build solutions          # build solutions
 ```

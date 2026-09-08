@@ -1,6 +1,7 @@
 # Lean
 .lake/
 lake-packages/
+FormalConjectures/
 *.olean
 *.ilean
 *.trace
@@ -27,6 +28,7 @@ venv/
 .DS_Store
 
 # Logs
+logs/
 *.log
 
 # Temp

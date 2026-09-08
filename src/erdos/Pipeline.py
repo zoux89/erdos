@@ -271,7 +271,6 @@ class Pipeline:
             border_style="red",
         ))
 
-        verification_result.success = False
         verification_result.status = VerificationStatus.ERROR
         verification_result.errors.append(f"LLM: {logic_check.get('summary', 'BS proof')}")
         attempt.llm_feedback_for_retry = feedback

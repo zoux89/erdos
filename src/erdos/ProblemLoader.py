@@ -79,7 +79,7 @@ class ProblemLoader:
 
         files = []
         for ext in FORMAT_EXTENSIONS:
-            files.extend(folder.glob(f"*{ext}"))
+            files.extend(folder.rglob(f"*{ext}"))
         return sorted(files)
 
     @staticmethod

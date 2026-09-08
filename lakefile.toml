@@ -7,6 +7,10 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "master"
 
+[[require]]
+name = "formal_conjectures"
+path = "FormalConjectures"
+
 # Main Erdos library
 [[lean_lib]]
 name = "Erdos"
